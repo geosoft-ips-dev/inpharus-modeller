@@ -1,4 +1,4 @@
-package classes;
+package Classes;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -9,6 +9,7 @@ import Datas.Beacon;
 import Datas.GatewayInfo;
 import Datas.PositioningBeacons;
 import Datas.PositioningBeacons.BeaconListUpdate;
+import Datas.RecordingInfo;
 import Panels.GatewayListPanel;
 import Sockets.GatewaySocketServer;
 import Sockets.RemoteControllerSocketServer;
@@ -96,8 +97,22 @@ public class MainClass extends JFrame implements LogUtil {
 			public void receivedMsg(String msg) {
 				// TODO Auto-generated method stub
 				showLog(msg);
+				
+				String [] packet = divideMsgToPacket(msg);
+				RecordingInfo info = RecordingInfo.getInstance();
+				
+				if(packet[0] == "1") {
+					info.startRecording(packet[1], packet[2]);
+				} else if(packet[0] == "0") {
+					info.stopRecording();
+				}
 			}
 		}, 2549);
+	}
+	
+	private String[] divideMsgToPacket(String msg) {
+		String[] packet = msg.split(",");
+		return packet;
 	}
 	
 	private void openGatewaySocketServer() {
