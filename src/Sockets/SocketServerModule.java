@@ -20,6 +20,7 @@ public class SocketServerModule {
 	
 	public interface SocketListener {
 		public void receivedMsg(String msg);
+		public void connectedUser(Socket socket);
 	}
 	
 	public SocketServerModule(SocketListener listener, int port) {
@@ -48,6 +49,9 @@ public class SocketServerModule {
 					Socket socket = server.accept();
 					
 					System.out.println("Accepted > " + socket.getInetAddress());
+					
+					if(listener != null)
+						listener.connectedUser(socket);
 					
 					receiver = new Receiver(socket);
 					receiver.start();

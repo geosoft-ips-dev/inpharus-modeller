@@ -1,25 +1,29 @@
 package Classes;
 
 import java.awt.Dimension;
+import java.net.Socket;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
 import Datas.Beacon;
-import Datas.GatewayInfo;
+import Datas.BeaconGatewayInfo;
+import Datas.ConnectedGatewayInfo;
 import Datas.PositioningBeacons;
 import Datas.PositioningBeacons.BeaconListUpdate;
 import Datas.RecordingInfo;
 import Panels.GatewayListPanel;
+import PositioningModules.GatewayTimeSyncer;
 import Sockets.GatewaySocketServer;
 import Sockets.RemoteControllerSocketServer;
 import Sockets.SocketServerModule.SocketListener;
 import Utils.DisplayUtil;
 import Utils.GatewayDataParser;
 import Utils.LogUtil;
+import PositioningModules.GatewayTimeSyncer.OnFoundBeaconInList;
 
 public class MainClass extends JFrame implements LogUtil {
-	private ArrayList<GatewayInfo> gateways = new ArrayList<>();
+	private ArrayList<BeaconGatewayInfo> gateways = new ArrayList<>();
 	
 	// GUI Panel
 	private GatewayListPanel gatewayPanel;
@@ -29,6 +33,10 @@ public class MainClass extends JFrame implements LogUtil {
 	private PositioningBeacons authBeacons;
 	
 	private ArrayList<Beacon> authBeaconList;
+	
+	private ConnectedGatewayInfo connGateway;
+	
+	private GatewayTimeSyncer gatewaySyncer;
 	
 	public MainClass() {
 		initJFrame();
@@ -49,6 +57,16 @@ public class MainClass extends JFrame implements LogUtil {
 				if(authBeaconList != null)
 					authBeaconList.clear();
 				authBeaconList = list;
+			}
+		});
+		
+		connGateway = new ConnectedGatewayInfo();
+		
+		gatewaySyncer = new GatewayTimeSyncer(connGateway, new OnFoundBeaconInList() {		
+			@Override
+			public void OnFound(ArrayList<Beacon> list, ArrayList<String> gatewayName) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 	}
@@ -107,6 +125,12 @@ public class MainClass extends JFrame implements LogUtil {
 					info.stopRecording();
 				}
 			}
+
+			@Override
+			public void connectedUser(Socket socket) {
+				// TODO Auto-generated method stub
+				
+			}
 		}, 2549);
 	}
 	
@@ -123,6 +147,12 @@ public class MainClass extends JFrame implements LogUtil {
 				showLog(msg);
 				
 				dataParser.getBeaconData(msg);
+			}
+
+			@Override
+			public void connectedUser(Socket socket) {
+				// TODO Auto-generated method stub
+				connGateway.addConnGateway("gateway1", socket);		
 			}
 		}, 8211);
 	}

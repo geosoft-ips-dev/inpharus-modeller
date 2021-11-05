@@ -63,7 +63,7 @@ public class GatewayDataParser {
 		String rawData = (String)o.get("rawData");
 		
 		if(type.equals(Beacon.TYPE_GATEWAY)) {
-			beacon = new GatewayInfo(timestamp, type, mac, gatewayFree, gatewayLoad);
+			beacon = new BeaconGatewayInfo(timestamp, type, mac, gatewayFree, gatewayLoad);
 		} else if(type.equals(Beacon.TYPE_IBEACON)) {
 			beacon = new iBeaconInfo(timestamp, type, mac, bleName, ibeaconUuid, ibeaconMajor, ibeaconMinor, rssi, ibeaconTxPower, battery);
 		} else if(type.equals(Beacon.TYPE_S1) || type.equals(Beacon.TYPE_S2) || type.equals(Beacon.TYPE_S3) || type.equals(Beacon.TYPE_S4)) {

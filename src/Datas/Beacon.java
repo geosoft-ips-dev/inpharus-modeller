@@ -1,5 +1,11 @@
 package Datas;
 
+/**
+ * 
+ * @author DWARF
+ * 비콘 부모 클래스
+ */
+
 public class Beacon {
 	public static String TYPE_GATEWAY = "gateway";
 	public static String TYPE_S1 = "S1";

@@ -11,7 +11,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import Datas.GatewayInfo;
+import Datas.BeaconGatewayInfo;
 
 public class GatewayListPanel {
 	private JPanel gatewayPanel;
@@ -43,7 +43,7 @@ public class GatewayListPanel {
 		return gatewayPanel;
 	}
 	
-	public void updateGatewayList(ArrayList<GatewayInfo> gateways) {
+	public void updateGatewayList(ArrayList<BeaconGatewayInfo> gateways) {
 		//gatewayList.setListData(gateways);
 	}
 }

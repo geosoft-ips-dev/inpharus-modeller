@@ -1,19 +1,22 @@
 package Datas;
 
-public class GatewayInfo extends Beacon {
-	private String gatewayFree = "";
-	private String gatewayLoad = "";
+import java.net.Socket;
+
+public class GatewayInfo {
+	private String gatewayName;
+	private Socket socket;
 	
-	public GatewayInfo(String time, String type, String mac, String gatewayFree, String gatewayLoad) {
-		super(time, type, mac);
-		// TODO Auto-generated constructor stub
+	public GatewayInfo(String gatewayName, Socket socket) {
+		this.gatewayName = gatewayName;
+		this.socket = socket;
 	}
 	
-	public String getGateFree() {
-		return gatewayFree;
+	public String getGatewayName() {
+		return gatewayName;
 	}
 	
-	public String gatewayLoad() {
-		return gatewayLoad;
+	public Socket getSocket() {
+		return socket;
 	}
+
 }
