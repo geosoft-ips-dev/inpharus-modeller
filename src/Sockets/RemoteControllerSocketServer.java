@@ -6,6 +6,6 @@ import java.net.Socket;
 public class RemoteControllerSocketServer extends SocketServerModule {
 
 	public RemoteControllerSocketServer(SocketListener listener, int port) {
-		super(listener, port);
+		super(listener, port, true);
 	}
 }

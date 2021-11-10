@@ -6,7 +6,7 @@ import java.net.Socket;
 public class GatewaySocketServer extends SocketServerModule {
 
 	public GatewaySocketServer(SocketListener listener, int port) {
-		super(listener, port);
+		super(listener, port, false);
 		// TODO Auto-generated constructor stub
 	}
 

@@ -29,6 +29,7 @@ public class SimplePositioning {
 			this.b = b;
 		}
 		
+		
 		@Override
 		public void run() {
 			int posX = -1, posY = -1;

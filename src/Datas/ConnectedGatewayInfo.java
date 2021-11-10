@@ -18,11 +18,13 @@ public class ConnectedGatewayInfo {
 	}
 	
 	public void setUpdateGatewayList(OnUpdateGatewayList listener) {
+		System.out.println("setUpdateGatewayList > "+ listener);
 		this.listener = listener;
 	}
 	
-	public ConnectedGatewayInfo() {
+	public ConnectedGatewayInfo(OnUpdateGatewayList listener) {
 		gateways = new ArrayList<>();
+		this.listener = listener;
 	}
 
 	public void addConnGateway(String name, Socket socket) {
@@ -43,8 +45,10 @@ public class ConnectedGatewayInfo {
 	}
 	
 	private void notifyListChanged() {
-		if(listener != null)
+		if(listener != null) {
 			listener.OnListChanged(gateways);
+			System.out.println("--- notifyListChanged --- > " + listener);
+		}
 	}
 	
 	public ArrayList<GatewayInfo> getGatewayList() {

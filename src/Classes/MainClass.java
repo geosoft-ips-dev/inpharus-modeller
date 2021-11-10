@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import Datas.Beacon;
 import Datas.BeaconGatewayInfo;
 import Datas.ConnectedGatewayInfo;
+import Datas.GatewayInfo;
 import Datas.PositioningBeacons;
 import Datas.PositioningBeacons.BeaconListUpdate;
 import Datas.RecordingInfo;
@@ -21,6 +22,7 @@ import Utils.DisplayUtil;
 import Utils.GatewayDataParser;
 import Utils.LogUtil;
 import PositioningModules.GatewayTimeSyncer.OnFoundBeaconInList;
+import Datas.ConnectedGatewayInfo.OnUpdateGatewayList;
 
 public class MainClass extends JFrame implements LogUtil {
 	private ArrayList<BeaconGatewayInfo> gateways = new ArrayList<>();
@@ -39,8 +41,8 @@ public class MainClass extends JFrame implements LogUtil {
 	private GatewayTimeSyncer gatewaySyncer;
 	
 	public MainClass() {
-		initJFrame();
-		addPanels();
+		//initJFrame();
+		//addPanels();
 		init();
 		openGatewaySocketServer();
 		openRemteSocketServer();
@@ -59,12 +61,18 @@ public class MainClass extends JFrame implements LogUtil {
 				authBeaconList = list;
 			}
 		});
-		
-		connGateway = new ConnectedGatewayInfo();
-		
+
+		connGateway = new ConnectedGatewayInfo(new OnUpdateGatewayList() {
+			@Override
+			public void OnListChanged(ArrayList<GatewayInfo> list) {
+				System.out.println("OnListChanged");
+			}
+		});	
+
 		gatewaySyncer = new GatewayTimeSyncer(connGateway, new OnFoundBeaconInList() {		
 			@Override
 			public void OnFound(ArrayList<Beacon> list, ArrayList<String> gatewayName) {
+				System.out.println("GatewayTimeSyncer");
 				// TODO Auto-generated method stub
 				
 			}
@@ -112,7 +120,7 @@ public class MainClass extends JFrame implements LogUtil {
 		remoteController = new RemoteControllerSocketServer(new SocketListener() {
 			
 			@Override
-			public void receivedMsg(String msg) {
+			public void receivedMsg(String ip, String msg) {
 				// TODO Auto-generated method stub
 				showLog(msg);
 				
@@ -129,7 +137,7 @@ public class MainClass extends JFrame implements LogUtil {
 			@Override
 			public void connectedUser(Socket socket) {
 				// TODO Auto-generated method stub
-				
+				System.out.println("RemoteControllerSocketServer > connectedUser()");
 			}
 		}, 2549);
 	}
@@ -142,17 +150,27 @@ public class MainClass extends JFrame implements LogUtil {
 	private void openGatewaySocketServer() {
 		gateway = new GatewaySocketServer(new SocketListener() {		
 			@Override
-			public void receivedMsg(String msg) {
+			public void receivedMsg(String ip, String msg) {
 				// TODO Auto-generated method stub
-				showLog(msg);
 				
-				dataParser.getBeaconData(msg);
+				//System.out.println("receivedMsg ip > " + ip);
+				//showLog(msg);
+				
+				ArrayList<Beacon> b = dataParser.getBeaconData(msg);
+				
+				
 			}
 
 			@Override
 			public void connectedUser(Socket socket) {
 				// TODO Auto-generated method stub
-				connGateway.addConnGateway("gateway1", socket);		
+				String ip = socket.getInetAddress() + "";
+				if(ip.contains("170"))
+					connGateway.addConnGateway("gateway1", socket);
+				else if(ip.contains("163"))
+					connGateway.addConnGateway("gateway2", socket);
+				
+				System.out.println("openGatewaySocketServer > connectedUser()");
 			}
 		}, 8211);
 	}

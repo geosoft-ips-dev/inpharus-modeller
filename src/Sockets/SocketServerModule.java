@@ -17,18 +17,20 @@ public class SocketServerModule {
 	private boolean isOperate = false;
 	
 	public SocketListener listener;
+	private boolean isReadLine = true;
 	
 	public interface SocketListener {
-		public void receivedMsg(String msg);
+		public void receivedMsg(String ip, String msg);
 		public void connectedUser(Socket socket);
 	}
 	
-	public SocketServerModule(SocketListener listener, int port) {
+	public SocketServerModule(SocketListener listener, int port, boolean isReadLine) {
 		try {
 			this.listener = listener;
 			this.PORT = port;
 			server = new ServerSocket(PORT);
 			//socket accept Thread
+			this.isReadLine = isReadLine;
 			
 			t = new Thread(connRunnable);
 			t.start();
@@ -90,20 +92,34 @@ public class SocketServerModule {
 		@Override
 		public void run() {
 			while(reader != null) {
+				String received = "";
 				try {
-					String received = reader.readLine();
-					System.out.println("received >> " + received);
-					String msg  = "OK\n";
-					os.write(msg.getBytes("UTF-8"));
-					/*
-					reader.close();
-					reader = null;
-					os.close();
-					*/
-					if(listener != null)
-						listener.receivedMsg(received);
+					if(isReadLine) {
+						received = reader.readLine();
+						System.out.println("received >> " + received);
+						
+						String msg  = "OK\n";
+					}
+					else {
+						int count = 0;
+						while(reader.ready()) {
+							count++;
+							
+							received += (char)reader.read();
+							//System.out.println(i + " > data " + (char)reader.read());
+						}
+
+						if(!received.equals("")) {
+							//System.out.println(count + " > " + received);
+							count = 0;
+						}		
+					}
 					
-					
+					if(!received.equals("")) {
+						if(listener != null) {
+							listener.receivedMsg(socket.getInetAddress().toString() , received);
+						}
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

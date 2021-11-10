@@ -7,7 +7,7 @@ package Datas;
  */
 
 public class Beacon {
-	public static String TYPE_GATEWAY = "gateway";
+	public static String TYPE_GATEWAY = "Gateway";
 	public static String TYPE_S1 = "S1";
 	public static String TYPE_S2 = "S2";
 	public static String TYPE_S3 = "S3";
